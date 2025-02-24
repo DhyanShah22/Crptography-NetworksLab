@@ -5,7 +5,6 @@
 #include <vector>
 using namespace std;
 
-// Function to check if a number is prime
 bool is_prime(long long n) {
     if (n < 2) return false;
     if (n == 2 || n == 3) return true;
@@ -16,7 +15,6 @@ bool is_prime(long long n) {
     return true;
 }
 
-// Function to compute (base^exp) % mod using modular exponentiation
 long long mod_exp(long long base, long long exp, long long mod) {
     long long result = 1;
     while (exp > 0) {
@@ -29,12 +27,10 @@ long long mod_exp(long long base, long long exp, long long mod) {
     return result;
 }
 
-// Function to compute gcd
 long long gcd(long long a, long long b) {
     return (b == 0) ? a : gcd(b, a % b);
 }
 
-// Function to find modular inverse using Extended Euclidean Algorithm
 long long mod_inverse(long long a, long long m) {
     long long m0 = m, t, q;
     long long x0 = 0, x1 = 1;
@@ -51,7 +47,6 @@ long long mod_inverse(long long a, long long m) {
     return x1;
 }
 
-// Function to find prime factors of a number
 vector<long long> find_prime_factors(long long n) {
     vector<long long> factors;
     while (n % 2 == 0) {
@@ -68,14 +63,13 @@ vector<long long> find_prime_factors(long long n) {
     return factors;
 }
 
-// Function to check if g is a primitive root of p
 bool is_primitive_root(long long g, long long p) {
-    long long phi = p - 1;  // Euler’s totient function for prime p is (p-1)
+    long long phi = p - 1;  
     vector<long long> factors = find_prime_factors(phi);
 
     for (long long factor : factors) {
         if (mod_exp(g, phi / factor, p) == 1) {
-            return false;  // g^((p-1)/q) ≡ 1 (mod p), not a primitive root
+            return false;  
         }
     }
     return true;
@@ -84,7 +78,6 @@ bool is_primitive_root(long long g, long long p) {
 int main() {
     long long p, g, x, hash_m;
     
-    // Ensure the user enters a valid prime number for p
     do {
         cout << "Enter a prime number (p): ";
         cin >> p;
@@ -93,7 +86,6 @@ int main() {
         }
     } while (!is_prime(p)); 
 
-    // Ensure the user enters a valid primitive root g
     do {
         cout << "Enter a primitive root of p (g): ";
         cin >> g;
@@ -107,7 +99,7 @@ int main() {
     cout << "Enter message hash value: ";
     cin >> hash_m;
     
-    long long y = mod_exp(g, x, p); // Public key y = g^x mod p
+    long long y = mod_exp(g, x, p); 
     
     cout << "Public Key (p, g, y): (" << p << ", " << g << ", " << y << ")\n";
     cout << "Private Key (x): " << x << "\n";
@@ -115,7 +107,7 @@ int main() {
     long long k;
     do {
         k = rand() % (p - 2) + 1;
-    } while (gcd(k, p - 1) != 1); // Choose k such that gcd(k, p-1) = 1
+    } while (gcd(k, p - 1) != 1); 
     
     long long r = mod_exp(g, k, p);
     long long k_inv = mod_inverse(k, p - 1);
@@ -124,7 +116,6 @@ int main() {
     
     cout << "Digital Signature (r, s): (" << r << ", " << s << ")\n";
     
-    // Verification
     long long v1 = mod_exp(y, r, p) * mod_exp(r, s, p) % p;
     long long v2 = mod_exp(g, hash_m, p);
     
