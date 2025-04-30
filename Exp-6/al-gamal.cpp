@@ -1,8 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <set>
-#include <cstdlib>
-#include <ctime>
 
 using namespace std;
 
@@ -18,63 +14,14 @@ long long modExp(long long base, long long exp, long long mod) {
     return result;
 }
 
-long long modInverse(long long a, long long m) {
-    long long m0 = m, t, q;
-    long long x0 = 0, x1 = 1;
-    if (m == 1) return 0;
-
-    while (a > 1) {
-        q = a / m;
-        t = m;
-        m = a % m, a = t;
-        t = x0;
-        x0 = x1 - q * x0;
-        x1 = t;
-    }
-    if (x1 < 0) x1 += m0;
-    return x1;
-}
-
-vector<long long> findGenerators(long long p) {
-    vector<long long> generators;
-    set<long long> uniqueElements;
-    
-    for (long long g = 2; g < p; g++) {
-        uniqueElements.clear();
-        bool isGenerator = true;
-
-        for (long long power = 1; power < p; power++) {
-            long long val = modExp(g, power, p);
-            if (uniqueElements.find(val) != uniqueElements.end()) {
-                isGenerator = false;
-                break;
-            }
-            uniqueElements.insert(val);
-        }
-
-        if (isGenerator) {
-            generators.push_back(g);
-        }
-    }
-    return generators;
-}
-
 int main() {
     srand(time(0));
 
-    long long p;
+    long long p, g;
     cout << "Enter a prime number (p): ";
     cin >> p;
 
-    vector<long long> generators = findGenerators(p);
-    cout << "Generators of " << p << " are: ";
-    for (long long g : generators) {
-        cout << g << " ";
-    }
-    cout << endl;
-
-    long long g;
-    cout << "Select a generator from the above list: ";
+    cout << "Enter a generator (g) for the group modulo p: ";
     cin >> g;
 
     long long x;
@@ -97,7 +44,7 @@ int main() {
     cout << "Ciphertext (c1, c2): (" << c1 << ", " << c2 << ")\n";
 
     long long s = modExp(c1, x, p);
-    long long s_inv = modInverse(s, p);
+    long long s_inv = modExp(s, p - 2, p);
     long long decrypted_m = (c2 * s_inv) % p;
 
     cout << "Decrypted Message: " << decrypted_m << "\n";

@@ -7,7 +7,6 @@
 using namespace std;
 using namespace std::chrono;
 
-// Permutation tables
 vector<int> P10 = {2, 4, 1, 6, 3, 9, 0, 8, 7, 5};
 vector<int> P8 = {5, 2, 6, 3, 7, 4, 9, 8};
 vector<int> IP = {1, 5, 2, 0, 3, 7, 4, 6};
@@ -15,7 +14,6 @@ vector<int> IP_INV = {3, 0, 2, 4, 6, 1, 7, 5};
 vector<int> EP = {3, 0, 1, 2, 1, 2, 3, 0};
 vector<int> P4 = {1, 3, 2, 0};
 
-// S-boxes
 vector<vector<int>> S0 = {
     {1, 0, 3, 2},
     {3, 2, 1, 0},
@@ -30,14 +28,12 @@ vector<vector<int>> S1 = {
     {2, 1, 0, 3}
 };
 
-// Helper function to permute bits
 void permute(const vector<int>& input, vector<int>& output, const vector<int>& table) {
     for (size_t i = 0; i < table.size(); i++) {
         output[i] = input[table[i]];
     }
 }
 
-// Function to left-shift a bit array
 void left_shift(vector<int>& key, int shifts) {
     int n = key.size();
     vector<int> temp(shifts);
@@ -52,7 +48,6 @@ void left_shift(vector<int>& key, int shifts) {
     }
 }
 
-// Key generation
 void generate_keys(const vector<int>& key, vector<int>& subkey1, vector<int>& subkey2) {
     vector<int> permuted(10), left(5), right(5), combined(10);
 

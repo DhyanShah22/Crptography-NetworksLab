@@ -35,7 +35,6 @@ void extendedEuclid(int a, int b) {
     cout << "Coefficients: s = " << s1 << ", t = " << t1 << endl;
     cout << "Verification: " << a << " * " << s1 << " + " << b << " * " << t1 << " = " << r1 << endl;
     
-     // modular inverse 
     if (r1 == 1) {
         int modInverse = t1; 
         int modInverse2= a+t1;

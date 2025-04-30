@@ -36,30 +36,42 @@ bool is_prime(long long n) {
     return true;
 }
 
-int main() {
-    srand(time(0));
-    long long p, g, x, hash_m;
-    cout << "Prime p: "; cin >> p;
-    if (!is_prime(p)) { cout << "Not prime.\n"; return 0; }
-    cout << "Primitive root g: "; cin >> g;
-    cout << "Private key x: "; cin >> x;
-    cout << "Message hash: "; cin >> hash_m;
+int main(){
+    long long p, g, x, hashM;
+    cout<<"Enter a prime number p: "<<endl;
+    cin>>p;
+    if(!is_prime(p)){
+        cerr<<"Not a prime, try again!"<<endl;
+        return 0;
+    } 
+    cout<<"Enter the primitive root (g): "<<endl;
+    cin>>g;
+
+    cout<<"Enter x, private key: ";
+    cin>>x;
+
+    cout<<"Enter hash message: "<<endl;
+    cin>>hashM;
 
     long long y = mod_exp(g, x, p);
-    cout << "Public Key (p, g, y): (" << p << ", " << g << ", " << y << ")\n";
 
+    cout<<"Public Key: "<< "(" << p << "," << g << "," << y << ")"<<endl;
     long long k;
-    do { k = rand() % (p - 2) + 1; } while (gcd(k, p - 1) != 1);
+    do {k = rand() % (p-2) + 1;} while(gcd(k, p-1) != 1);
     long long r = mod_exp(g, k, p);
-    long long k_inv = mod_inverse(k, p - 1);
-    long long s = (k_inv * (hash_m - x * r)) % (p - 1);
-    if (s < 0) s += (p - 1);
+    long long s = mod_inverse(k, p-1) * (hashM - x*r + (p+1)) % p-1;
 
-
-    cout << "Signature (r, s): (" << r << ", " << s << ")\n";
+    cout<<"Digital Signature: " << "(" << r << "," << s << ")"<<endl;
 
     long long v1 = (mod_exp(y, r, p) * mod_exp(r, s, p)) % p;
-    long long v2 = mod_exp(g, hash_m, p);
+    long long v2 = mod_exp(g, hashM, p);
 
-    cout << (v1 == v2 ? "Signature is valid!" : "Signature is invalid!") << endl;
+    if(v1 == v2){
+        cout<<"Signature is valid!"<<endl;
+    }
+    else{
+        cout<<"Signature is invalid!"<<endl;
+    }
+
+    return 0;
 }
