@@ -13,21 +13,49 @@ long long modExp(long long base, long long exp, long long mod){
     return result;
 }
 
-long long modInverse(long long a, long long m) {
-    long long m0 = m, t, q;
-    long long x0 = 0, x1 = 1;
-    if (m == 1) return 0;
+// long long modInverse(long long a, long long m) {
+//     long long m0 = m, t, q;
+//     long long x0 = 0, x1 = 1;
+//     if (m == 1) return 0;
 
-    while (a > 1) {
-        q = a / m;
-        t = m;
-        m = a % m, a = t;
-        t = x0;
-        x0 = x1 - q * x0;
-        x1 = t;
+//     while (a > 1) {
+//         q = a / m;
+//         t = m;
+//         m = a % m, a = t;
+//         t = x0;
+//         x0 = x1 - q * x0;
+//         x1 = t;
+//     }
+//     if (x1 < 0) x1 += m0;
+//     return x1;
+// }
+
+long long modInverse(long long a, long long m){
+    int r1 = a, r2 = m;
+    int s1 = 1, s2 = 0;
+    int t1 = 0, t2 = 1;
+
+    int q, r, s, t;
+
+    while(r2 > 0){
+        q = r1 / r2;
+        r = r1 - q * r2;
+        r1 = r2;
+        r2 = r;
+
+        s = s1 - q * s2;
+        s1 = s2;
+        s2 = s;
+
+        t = t1 - q * t2;
+        t1 = t2;
+        t2 = t;
     }
-    if (x1 < 0) x1 += m0;
-    return x1;
+
+    if(r1 != 1)
+        return -1; 
+    else
+        return (s1 + m) % m; 
 }
 
 int main(){
