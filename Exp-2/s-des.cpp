@@ -51,45 +51,35 @@ void left_shift(vector<int>& key, int shifts) {
 void generate_keys(const vector<int>& key, vector<int>& subkey1, vector<int>& subkey2) {
     vector<int> permuted(10), left(5), right(5), combined(10);
 
-    // Apply P10 permutation
     permute(key, permuted, P10);
 
-    // Split into left and right halves
     copy(permuted.begin(), permuted.begin() + 5, left.begin());
     copy(permuted.begin() + 5, permuted.end(), right.begin());
 
-    // Perform 1st left shift
     left_shift(left, 1);
     left_shift(right, 1);
 
-    // Combine halves and apply P8 to get subkey1
     copy(left.begin(), left.end(), combined.begin());
     copy(right.begin(), right.end(), combined.begin() + 5);
     permute(combined, subkey1, P8);
 
-    // Perform 2nd left shift (2 shifts total)
     left_shift(left, 2);
     left_shift(right, 2);
 
-    // Combine halves and apply P8 to get subkey2
     copy(left.begin(), left.end(), combined.begin());
     copy(right.begin(), right.end(), combined.begin() + 5);
     permute(combined, subkey2, P8);
 }
 
-// Feistel function
 void f_function(const vector<int>& right, const vector<int>& subkey, vector<int>& output) {
     vector<int> expanded(8), xor_result(8), sbox_output(4);
 
-    // Expand and permute right half
     permute(right, expanded, EP);
 
-    // XOR with subkey
     for (size_t i = 0; i < expanded.size(); i++) {
         xor_result[i] = expanded[i] ^ subkey[i];
     }
 
-    // S-box lookups
     int row = xor_result[0] * 2 + xor_result[3];
     int col = xor_result[1] * 2 + xor_result[2];
     int s0_value = S0[row][col];
@@ -102,22 +92,17 @@ void f_function(const vector<int>& right, const vector<int>& subkey, vector<int>
     sbox_output[2] = (s1_value >> 1) & 1;
     sbox_output[3] = s1_value & 1;
 
-    // Apply P4 permutation
     permute(sbox_output, output, P4);
 }
 
-// S-DES rounds
 void s_des_rounds(const vector<int>& plaintext, const vector<int>& subkey1, const vector<int>& subkey2, vector<int>& ciphertext, bool reverse_keys) {
     vector<int> ip(8), left(4), right(4), fk_output(4), temp(4);
 
-    // Apply initial permutation
     permute(plaintext, ip, IP);
 
-    // Split into left and right halves
     copy(ip.begin(), ip.begin() + 4, left.begin());
     copy(ip.begin() + 4, ip.end(), right.begin());
 
-    // First round
     f_function(right, reverse_keys ? subkey2 : subkey1, fk_output);
     for (size_t i = 0; i < left.size(); i++) {
         temp[i] = left[i] ^ fk_output[i];
@@ -125,13 +110,11 @@ void s_des_rounds(const vector<int>& plaintext, const vector<int>& subkey1, cons
     left = right;
     right = temp;
 
-    // Second round
     f_function(right, reverse_keys ? subkey1 : subkey2, fk_output);
     for (size_t i = 0; i < left.size(); i++) {
         left[i] ^= fk_output[i];
     }
 
-    // Combine halves and apply inverse initial permutation
     copy(left.begin(), left.end(), ip.begin());
     copy(right.begin(), right.end(), ip.begin() + 4);
     permute(ip, ciphertext, IP_INV);
@@ -140,7 +123,6 @@ void s_des_rounds(const vector<int>& plaintext, const vector<int>& subkey1, cons
 void brute_force(const vector<int>& ciphertext, const vector<int>& original_plaintext) {
     vector<int> key(10), subkey1(8), subkey2(8), test_plaintext(8);
 
-    // Start timing
     auto start_time = high_resolution_clock::now();
 
     for (int candidate = 0; candidate < 1024; candidate++) {
@@ -154,10 +136,8 @@ void brute_force(const vector<int>& ciphertext, const vector<int>& original_plai
         s_des_rounds(ciphertext, subkey1, subkey2, test_plaintext, true);
 
         if (test_plaintext == original_plaintext) {
-            // End timing
             auto end_time = high_resolution_clock::now();
 
-            // Calculate and print elapsed time
             auto duration = duration_cast<milliseconds>(end_time - start_time).count();
             cout << "Key found: ";
             for (int bit : key) {
@@ -168,7 +148,6 @@ void brute_force(const vector<int>& ciphertext, const vector<int>& original_plai
         }
     }
 
-    // End timing for unsuccessful case
     auto end_time = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(end_time - start_time).count();
     cout << "Key not found.\n";

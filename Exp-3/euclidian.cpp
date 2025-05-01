@@ -36,13 +36,9 @@ void extendedEuclid(int a, int b) {
     cout << "Verification: " << a << " * " << s1 << " + " << b << " * " << t1 << " = " << r1 << endl;
     
     if (r1 == 1) {
-        int modInverse = t1; 
-        int modInverse2= a+t1;
-        printf("Modular inverse of %d modulo %d is: %d or %d", a, b, modInverse, modInverse2);
-    } else {
-        printf("Modular inverse does not exist because GCD(%d, %d) != 1\n", a, b);
+        int modInverse = (s1 % b + b) % b;  
+        printf("Modular inverse of %d modulo %d is: %d\n", a, b, modInverse);
     }
-
 }
 
 int main() {

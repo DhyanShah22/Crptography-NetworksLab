@@ -43,7 +43,7 @@ void extendedEuclid(int a, int b){
     cout<<"coefficients"<<" "<<s1<<", "<<t1<<endl;
 
     if(gcdVal == 1){
-        cout<<"The mod inv of "<< a << " mod " << b << " is: " << (t1 + b) % b << endl;
+        cout<<"The mod inv of "<< a << " mod " << b << " is: " << (s1 + b) % b << endl;
     }
     else{
         cout<<"Modular inverse does not exist because GCD("<<a<<", "<<b<<") != 1\n";
